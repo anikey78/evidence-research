@@ -55,7 +55,7 @@ The repository includes `render.yaml` for a Render Docker web service on its fre
 3. Add `OPENAI_API_KEY` through the host's secret settings. Do not put a live key in GitHub Actions, source files, or the Render blueprint.
 4. Set `ALLOWED_HOSTS` to the exact public hostname, such as `your-service.onrender.com`.
 5. Confirm the HTTPS URL and `/api/health` endpoint. `research_ready` should be `true` once the secret is configured.
-6. Enable GitHub secret scanning and push protection, private vulnerability reporting, and branch protection requiring CI checks.
+6. GitHub secret scanning, push protection, private vulnerability reporting, Dependabot, and CodeQL are enabled; check the GitHub Security tab for new findings.
 
 This repository does not publish itself or create a hosting account. Hosting, model, and search usage may incur charges under your provider account.
 
@@ -95,10 +95,10 @@ Returns `answer`, `citations`, `grounded`, and `refused`. `GET /api/health` retu
 
 ## GitHub security checklist
 
-- Review the full Git history for secrets before making the repository public; keep live keys out of GitHub.
+- GitHub secret scanning is enabled and currently reports no unresolved secrets. A separate manual audit of all commit history could not be completed, so this is not a complete audit or a guarantee; verify the history before production and investigate any alerts.
 - Add the real API key only to the deployment host's secret manager.
-- Turn on secret scanning, push protection, and Dependabot alerts.
-- Require the CI and security jobs before merging.
+- Enabled: dependency graph, Dependabot alerts, malware alerts and security updates, secret scanning, push protection, private vulnerability reporting, CodeQL default setup, and GitHub AI application scanning.
+- The active Protect main ruleset requires pull requests and current quality and container checks; CodeQL and AI application scanning are enabled but are not required merge checks.
 - Keep the default branch protected and review dependency/base-image updates.
 
 ## Legal text files
