@@ -1,0 +1,45 @@
+EVIDENCE RESEARCH — PRIVACY NOTICE
+
+This notice describes the starter app's intended data handling. It is not a
+legal certification. The person or organization that deploys the app is its
+operator and must review the hosting provider's and AI provider's current
+privacy terms and configure the service for its users.
+
+WHAT THE APP KEEPS
+
+- The app has no user accounts, conversation database, saved chat history,
+  analytics, or advertising trackers.
+- The app does not write question or answer text to its own application logs.
+- Each request is processed independently. Refreshing or closing the page does
+  not create a saved conversation to return to later.
+- Responses API requests set store=false. Moderation requests use the separate
+  Moderations API. These settings do not change the AI provider's account-level
+  data controls, safety retention, or other applicable terms.
+
+WHAT IS SENT OUT
+
+- The question or task and selected exam options are sent from the browser to
+  the server running this app.
+- The server sends that text to the configured AI provider for moderation and
+  response generation. Exam and research modes also request web search and a
+  separate evidence review.
+- The hosting provider may process connection details such as IP address,
+  request time, and service logs under its own policies.
+- The AI provider and hosting provider process data under the policies and
+  settings of the accounts used by the operator. Review those terms before
+  entering information.
+
+USER GUIDANCE
+
+- Do not enter passwords, API keys, government identifiers, private student
+  records, confidential work material, or sensitive personal details.
+- A public deployment has a public URL. Anyone who can reach it can submit
+  requests and may cause the operator to incur provider usage charges. Add
+  authentication, spend limits, and abuse monitoring before shared use.
+- Do not treat generated exam practice as an official paper or guaranteed
+  prediction. Check the official syllabus and marking guidance.
+
+CONTACT
+
+The deployer should add their organization or contact details here before
+publishing this notice as a service privacy policy.
