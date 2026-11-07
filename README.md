@@ -14,7 +14,7 @@ A deployable research-assistant web app that searches the live web, returns clic
 - Optional configurable blocked phrases as a supplemental filter.
 - Input size limits, request rate limiting, bounded concurrency, timeouts, no conversation storage, and no question-body logging.
 - Security headers, host validation, non-root container, read-only container filesystem, and minimal Docker capabilities.
-- GitHub Actions lint, static security scan, dependency audit, and container build; Dependabot updates.
+- Unit checks plus GitHub Actions lint, static security scan, dependency audit, and container build; Dependabot updates.
 
 ## Quick start
 
