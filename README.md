@@ -95,8 +95,17 @@ Returns `answer`, `citations`, `grounded`, and `refused`. `GET /api/health` retu
 
 ## GitHub security checklist
 
-- Keep the repository private until you are ready to publish its code and documentation.
+- Review the full Git history for secrets before making the repository public; keep live keys out of GitHub.
 - Add the real API key only to the deployment host's secret manager.
 - Turn on secret scanning, push protection, and Dependabot alerts.
 - Require the CI and security jobs before merging.
 - Keep the default branch protected and review dependency/base-image updates.
+
+## Legal text files
+
+- [`LAW.txt`](LAW.txt) lists India-focused legal topics and official sources for
+  the operator to review.
+- [`TERMS_AND_CONDITIONS.txt`](TERMS_AND_CONDITIONS.txt) is a project-specific
+  draft. Complete its bracketed operator, contact, date, and court-location
+  fields and obtain qualified Indian legal review before using it as public
+  terms. It is not a privacy notice or a compliance certification.
