@@ -109,3 +109,14 @@ Returns `answer`, `citations`, `grounded`, and `refused`. `GET /api/health` retu
   draft. Complete its bracketed operator, contact, date, and court-location
   fields and obtain qualified Indian legal review before using it as public
   terms. It is not a privacy notice or a compliance certification.
+
+
+## Accuracy target and evidence review
+
+The project sets a **99% precision target among substantive answers** on a curated, human-reviewed benchmark. This target has not been measured or achieved for this repository, and it is not a guarantee for every possible question. Report coverage and abstentions with precision. See [ACCURACY_EVALUATION.md](ACCURACY_EVALUATION.md) for the evaluation protocol.
+
+At runtime, the app performs a second fresh-search review and withholds substantive answers unless every material claim is judged supported, no issue is reported, and the review supplies matching citation annotations from at least two distinct source hosts. The app labels this gate as a review pass, not proof of correctness or statistical 99% accuracy. Different hosts may repeat the same underlying report, and the default verifier uses the same model, so correlated errors remain possible. The extra search increases response time and API use.
+
+Set OPENAI_VERIFIER_MODEL to a different supported model to add some model diversity. Leave it empty to use OPENAI_MODEL for both passes. If the review is uncertain, returns issues, lacks the required citations, or fails, the service abstains.
+
+POST /api/answer now also returns citation_spans and verified. The verified field means only that the review gate passed; it is not a correctness guarantee.
