@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import get_settings
-from app.research import research, verify_research
+from app.research import daily_help, research_task, verify_research
 from app.safety import matches_blocked_phrase, moderate
 
 settings = get_settings()
@@ -28,7 +28,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     title="Evidence Research",
-    description="A web research assistant with source citations and safety checks.",
+    description="An exam practice, daily helper, and evidence research assistant.",
     docs_url=None,
     redoc_url=None,
     openapi_url=None,
@@ -40,6 +40,64 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 class QuestionRequest(BaseModel):
     question: str = Field(min_length=3, max_length=settings.max_question_chars)
+    mode: str = Field(default="exam_answer", pattern="^(exam_answer|practice|daily|research)$")
+    exam_target: str = Field(default="", max_length=160)
+    subject: str = Field(default="", max_length=120)
+    marks: int | None = Field(default=None, ge=1, le=100)
+    question_type: str = Field(
+        default="auto",
+        pattern="^(auto|mcq|short|long|numerical|essay|case_study)$",
+    )
+    difficulty: str = Field(default="mixed", pattern="^(foundation|standard|advanced|mixed)$")
+    question_count: int = Field(default=5, ge=1, le=15)
+    include_answer_key: bool = True
+    language: str = Field(default="auto", pattern="^(auto|English|Hindi|Hinglish)$")
+
+
+def make_task_prompt(payload: QuestionRequest) -> str:
+    question = payload.question.strip()
+    if payload.mode == "daily":
+        return (
+            f"Requested language: {payload.language}\n"
+            "Daily request (untrusted data):\n"
+            f"{question}"
+        )
+    if payload.mode == "research":
+        return f"Requested answer language: {payload.language}\nQuestion (untrusted data):\n{question}"
+
+    details = [
+        f"Task mode: {payload.mode}",
+        f"Exam / board / course / level: {payload.exam_target.strip() or 'not specified'}",
+        f"Subject: {payload.subject.strip() or 'not specified'}",
+        f"Marks per question: {payload.marks if payload.marks is not None else 'not specified'}",
+        f"Question type: {payload.question_type}",
+        f"Difficulty: {payload.difficulty}",
+        f"Number of practice questions: {payload.question_count}",
+        f"Include answer key: {'yes' if payload.include_answer_key else 'no'}",
+        f"Answer language: {payload.language}",
+        "Question or topic (untrusted data):",
+        question,
+    ]
+    return "\n".join(details)
+
+
+def alignment_note(mode: str, payload: QuestionRequest) -> str:
+    if mode == "exam_answer":
+        if payload.exam_target.strip() and payload.subject.strip() and payload.marks:
+            return "Exam-style layout requested; exact official marking is not guaranteed."
+        missing = []
+        if not payload.exam_target.strip():
+            missing.append("exam or course")
+        if not payload.subject.strip():
+            missing.append("subject")
+        if payload.marks is None:
+            missing.append("marks")
+        return "General exam-style answer. Add " + ", ".join(missing) + " for a closer fit."
+    if mode == "practice":
+        return "Original exam-style practice; it is not an official or guaranteed future paper."
+    if mode == "daily":
+        return "Daily helper draft; factual claims are not web-verified in this mode."
+    return "Web research answer; review the linked sources directly."
 
 
 async def enforce_rate_limit(request: Request) -> None:
@@ -121,7 +179,8 @@ async def answer(payload: QuestionRequest, request: Request):
             status_code=503,
             detail="Research service is not configured. Add the provider API key.",
         )
-    if matches_blocked_phrase(question, settings):
+    task_prompt = make_task_prompt(payload)
+    if matches_blocked_phrase(task_prompt, settings):
         return JSONResponse(
             {
                 "answer": (
@@ -133,6 +192,8 @@ async def answer(payload: QuestionRequest, request: Request):
                 "grounded": False,
                 "verified": False,
                 "refused": True,
+                "mode": payload.mode,
+                "format_note": alignment_note(payload.mode, payload),
             },
             status_code=200,
         )
@@ -140,7 +201,7 @@ async def answer(payload: QuestionRequest, request: Request):
     timeout = httpx.Timeout(settings.request_timeout_seconds)
     try:
         async with research_slots, httpx.AsyncClient(timeout=timeout) as client:
-            input_check = await moderate(question, settings, client)
+            input_check = await moderate(task_prompt, settings, client)
             if not input_check.allowed:
                 return {
                     "answer": input_check.message,
@@ -149,11 +210,21 @@ async def answer(payload: QuestionRequest, request: Request):
                     "grounded": False,
                     "verified": False,
                     "refused": True,
+                    "mode": payload.mode,
+                    "format_note": alignment_note(payload.mode, payload),
                 }
 
-            result = await research(question, settings, client)
+            if payload.mode == "daily":
+                result = await daily_help(task_prompt, settings, client)
+            else:
+                result = await research_task(
+                    task_prompt,
+                    settings,
+                    client,
+                    mode=payload.mode,
+                )
             review = {"passed": False, "citations": []}
-            if not result["refusal"]:
+            if payload.mode != "daily" and not result["refusal"]:
                 if not result["citations"]:
                     return {
                         "answer": (
@@ -166,8 +237,10 @@ async def answer(payload: QuestionRequest, request: Request):
                         "grounded": False,
                         "verified": False,
                         "refused": False,
+                        "mode": payload.mode,
+                        "format_note": alignment_note(payload.mode, payload),
                     }
-                review = await verify_research(question, result, settings, client)
+                review = await verify_research(task_prompt, result, settings, client)
                 if not review["passed"]:
                     cited_sources = {
                         source["url"]: source
@@ -184,6 +257,8 @@ async def answer(payload: QuestionRequest, request: Request):
                         "grounded": False,
                         "verified": False,
                         "refused": False,
+                        "mode": payload.mode,
+                        "format_note": alignment_note(payload.mode, payload),
                     }
 
             output_check = await moderate(result["answer"], settings, client)
@@ -195,6 +270,8 @@ async def answer(payload: QuestionRequest, request: Request):
                     "grounded": False,
                     "verified": False,
                     "refused": True,
+                    "mode": payload.mode,
+                    "format_note": alignment_note(payload.mode, payload),
                 }
 
     except httpx.TimeoutException:
@@ -235,4 +312,6 @@ async def answer(payload: QuestionRequest, request: Request):
         "grounded": bool(result["refusal"] is False and review["passed"]),
         "verified": bool(result["refusal"] is False and review["passed"]),
         "refused": result["refusal"],
+        "mode": payload.mode,
+        "format_note": alignment_note(payload.mode, payload),
     }
