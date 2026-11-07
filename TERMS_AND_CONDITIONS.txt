@@ -1,0 +1,163 @@
+EVIDENCE RESEARCH — TERMS AND CONDITIONS
+
+Status: Draft for legal review. Do not present this file as final public terms
+until the operator completes every bracketed field and obtains any needed legal
+review.
+
+Prepared: 7 November 2026
+Effective date: [ADD DATE]
+Operator legal name: [ADD LEGAL NAME]
+Operator address: [ADD POSTAL ADDRESS]
+Legal contact email: [ADD CONTACT EMAIL]
+Service URL: [ADD PUBLIC SERVICE URL]
+Court location for clause 13: [ADD CITY AND STATE/UNION TERRITORY, INDIA]
+
+1. ACCEPTANCE AND SCOPE
+
+These draft terms describe use of the Evidence Research website and its API
+(the "Service"). By using the Service after the operator publishes a completed
+version of these terms, you agree to them to the extent permitted by applicable
+law. If you do not agree, do not use the Service. Mandatory rights under
+applicable law are not waived.
+
+The Service is a research-assistant software project. The operator may be the
+person or organization that deploys it; the repository author is not necessarily
+the operator of a particular hosted instance. Before publication, the operator
+must identify itself in the fields above and make these terms available from the
+actual Service.
+
+2. ELIGIBILITY
+
+You may use the Service only if you can lawfully accept these terms and are
+permitted to use the Service under the laws that apply to you. The Service is
+not designed for children. The operator must review and implement any age,
+parental-consent, or child-data requirements that apply before making the
+Service available to children.
+
+3. WHAT THE SERVICE DOES
+
+The Service uses automated models, moderation, and web search to prepare
+research answers and citations. It may refuse a request, be unavailable, change
+its features, or return no answer. The operator may apply request limits and
+may suspend access to protect the Service or comply with law.
+
+4. ACCURACY, CITATIONS, AND PROFESSIONAL ADVICE
+
+Answers may be inaccurate, incomplete, biased, out of date, or unsupported.
+Search results and citations can be weak, conflicting, or misleading. A citation
+does not prove a claim is true, current, or fully supported. You are responsible
+for checking important information against original sources and qualified
+professionals.
+
+The Service is informational only. It is not legal, medical, financial,
+emergency, safety, or other professional advice, and it does not make decisions
+for you. Do not rely on it as the sole basis for a consequential decision or
+action. No promise of correctness, certainty, uninterrupted availability, or a
+particular search result is made.
+
+5. ACCEPTABLE USE
+
+You must comply with applicable law and third-party rights. You must not use
+the Service to:
+
+- plan or facilitate violence, weapon construction, self-harm, abuse,
+  exploitation, or other physical harm;
+- create or deploy malware, steal credentials, conduct phishing, obtain
+  unauthorized access, evade security controls, or attack another system;
+- violate privacy, intellectual-property, confidentiality, or data-protection
+  rights;
+- submit content you are not authorized to disclose;
+- bypass moderation, phrase filters, rate limits, access restrictions, or other
+  safeguards;
+- overload, disrupt, scrape, reverse engineer, or interfere with the Service or
+  its providers; or
+- use outputs to mislead others about their source, certainty, or whether a
+  human verified them.
+
+The operator may block requests, restrict access, or preserve limited records
+when reasonably necessary to secure the Service, investigate abuse, or comply
+with law.
+
+6. SAFETY CONTROLS
+
+The Service uses automated moderation and optional phrase filters. They can
+miss harmful requests, flag legitimate requests, or be bypassed. They are
+protective measures, not guarantees that all use is safe or lawful. Do not try
+to evade them and do not treat their response as approval for an activity.
+
+7. YOUR CONTENT AND DATA HANDLING
+
+Do not submit personal, sensitive, confidential, or regulated information unless
+the operator has expressly enabled and documented that use. Questions are sent
+to third-party providers for moderation and research. The current code sets
+store=false on Responses API requests and does not intentionally log question
+bodies in application logs. This does not mean that no data is processed or
+retained: hosting providers, network providers, API endpoints, abuse-monitoring
+systems, or account settings may process or retain data under their own terms.
+The operator must publish a separate, accurate privacy notice and check current
+provider policies before launch.
+
+You retain any rights you have in content you submit. You authorize the operator
+and its service providers to process that content only as needed to operate,
+secure, and support the Service, subject to the applicable privacy notice and
+law. You confirm you have the rights and permissions needed to submit it.
+
+8. THIRD-PARTY SERVICES AND SOURCES
+
+The Service may rely on OpenAI, web-search providers, hosting providers, and
+linked websites. Those services and sources may have their own terms, privacy
+notices, availability limits, and content. The operator does not control all
+third-party content or service behavior. Follow applicable third-party terms
+when using them.
+
+9. INTELLECTUAL PROPERTY
+
+The Service's name, software, and materials may be protected by intellectual-
+property law. No license to reuse the repository or other operator materials is
+granted by these terms; any separate license file in the repository controls
+software licensing. You may not remove ownership or attribution notices.
+
+10. CHANGES, AVAILABILITY, AND SUSPENSION
+
+The operator may update the Service or these terms. The operator should publish
+the updated terms and effective date and give notice where required by law.
+The Service may be changed, suspended, or discontinued. No availability level is
+promised by this draft.
+
+11. DISCLAIMERS AND LIABILITY
+
+To the maximum extent permitted by applicable law, the Service is provided
+without a guarantee that it will be error-free, secure, uninterrupted, accurate,
+or suitable for a particular purpose. Nothing in these terms excludes or limits
+rights or liability that cannot lawfully be excluded or limited. Any permitted
+limitation of liability must be reviewed and completed by the operator's Indian
+counsel before publication.
+
+12. COMPLAINTS AND CONTACT
+
+For legal or service complaints, contact: [ADD CONTACT EMAIL]. The operator must
+provide any grievance or complaint mechanism required by applicable law and
+must monitor the address it publishes.
+
+13. GOVERNING LAW AND COURTS
+
+These terms are intended to be governed by the laws of India, subject to
+mandatory protections and rights under applicable law. Any court-jurisdiction
+wording must be completed for [CITY AND STATE/UNION TERRITORY, INDIA] and checked
+by qualified Indian counsel before publication. This clause does not remove
+mandatory jurisdiction, consumer, or statutory rights.
+
+14. SEVERABILITY AND ENTIRE AGREEMENT
+
+If a provision is unenforceable, it will be applied only to the extent allowed
+by law and the rest will remain in effect. These terms and any completed privacy
+notice describe the Service terms for the operator's deployment, subject to
+mandatory law and any additional written terms presented to the user.
+
+15. OPERATOR PUBLICATION CHECKLIST
+
+Before publishing, replace every bracketed field; confirm the operator and
+service URL; link these terms and a separate privacy notice in the live UI; set
+an effective date; check the hosting and provider terms; and have qualified
+Indian counsel review the final text. Do not claim that these terms by
+themselves make the Service legally compliant.
