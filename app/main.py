@@ -49,21 +49,26 @@ class QuestionRequest(BaseModel):
         pattern="^(auto|mcq|short|long|numerical|essay|case_study)$",
     )
     difficulty: str = Field(default="mixed", pattern="^(foundation|standard|advanced|mixed)$")
-    question_count: int = Field(default=5, ge=1, le=15)
+    question_count: int = Field(default=5, ge=1, le=8)
     include_answer_key: bool = True
     language: str = Field(default="auto", pattern="^(auto|English|Hindi|Hinglish)$")
 
 
 def make_task_prompt(payload: QuestionRequest) -> str:
     question = payload.question.strip()
+    language = (
+        payload.language
+        if payload.language != "auto"
+        else "match the language used in the question"
+    )
     if payload.mode == "daily":
         return (
-            f"Requested language: {payload.language}\n"
+            f"Requested language: {language}\n"
             "Daily request (untrusted data):\n"
             f"{question}"
         )
     if payload.mode == "research":
-        return f"Requested answer language: {payload.language}\nQuestion (untrusted data):\n{question}"
+        return f"Requested answer language: {language}\nQuestion (untrusted data):\n{question}"
 
     details = [
         f"Task mode: {payload.mode}",
@@ -74,7 +79,7 @@ def make_task_prompt(payload: QuestionRequest) -> str:
         f"Difficulty: {payload.difficulty}",
         f"Number of practice questions: {payload.question_count}",
         f"Include answer key: {'yes' if payload.include_answer_key else 'no'}",
-        f"Answer language: {payload.language}",
+        f"Answer language: {language}",
         "Question or topic (untrusted data):",
         question,
     ]
