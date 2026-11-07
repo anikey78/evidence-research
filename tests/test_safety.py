@@ -4,7 +4,7 @@ import httpx
 import pytest
 
 from app.config import Settings
-from app.safety import moderate, matches_blocked_phrase
+from app.safety import matches_blocked_phrase, moderate
 
 
 def test_builtin_and_custom_phrase_filters_use_word_boundaries() -> None:
