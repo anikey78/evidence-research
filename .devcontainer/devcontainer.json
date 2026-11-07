@@ -4,6 +4,7 @@
     "dockerfile": "../Dockerfile",
     "context": ".."
   },
+  "overrideCommand": false,
   "forwardPorts": [8000],
   "portsAttributes": {
     "8000": {
