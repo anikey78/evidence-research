@@ -1,0 +1,100 @@
+EVIDENCE RESEARCH — INDIA LEGAL NOTICE AND COMPLIANCE NOTES
+
+Status: Draft for the service operator's review. This document is general
+information, not legal advice, a legal opinion, or a certification that the
+software or its operator complies with any law.
+
+Prepared: 7 November 2026
+Operator legal name: [ADD LEGAL NAME]
+Legal contact: [ADD CONTACT EMAIL]
+Service URL: [ADD PUBLIC SERVICE URL]
+Place for court-jurisdiction clause: [ADD CITY AND STATE/UNION TERRITORY]
+
+1. PURPOSE
+
+This note identifies legal topics that an operator of Evidence Research should
+review before opening a hosted service to the public. It is not a complete list
+of laws and does not decide whether any particular statute applies to the
+operator, deployment, user, or processing activity.
+
+2. INDIA LAW TO REVIEW
+
+The Digital Personal Data Protection Act, 2023 and the Digital Personal Data
+Protection Rules, 2025 are relevant to review when digital personal data is
+processed. The Central Government's commencement notification provides for
+phased commencement. The operator must check the latest Gazette notifications,
+commencement dates, amendments, rules, and any orders that apply on the date and
+in the place the service is operated. Do not treat this draft as a finding that
+all provisions are currently in force or that the service complies with them.
+
+The Information Technology Act, 2000 and the Information Technology
+(Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, as amended,
+may also need review depending on the service's features and the operator's
+role. Whether the service is an intermediary or has any particular due-diligence
+obligation is a legal question for the operator and its counsel; this file does
+not make that classification.
+
+Copyright, consumer-protection, contract, cybersecurity, criminal, tax, and
+other central or state laws may also apply depending on how the service is
+operated and used.
+
+3. OPERATOR CHECKLIST BEFORE PUBLIC LAUNCH
+
+- Identify the legal operator, its contact address, and a monitored legal or
+  privacy contact email.
+- Map the data flow, including hosting logs, moderation requests, research
+  requests, search results, and any operational monitoring.
+- Publish a separate privacy notice that accurately describes purposes,
+  recipients, retention, user rights, complaint handling, and cross-border
+  processing where applicable.
+- Review current terms and data controls for the hosting provider, OpenAI API,
+  and any web-search provider. The application sets store=false for Responses
+  API calls, but that setting alone does not establish zero retention across all
+  providers, endpoints, hosting logs, or account configurations.
+- Decide and implement suitable retention, deletion, access-control, incident
+  response, backup, and security procedures.
+- Review rules relating to children and obtain any required consent or exclude
+  child users as appropriate to the service and applicable law.
+- Review any consumer, accessibility, grievance, intermediary, or other duties
+  triggered by the actual service design and audience.
+- Have qualified Indian counsel review this notice and the Terms and Conditions
+  before relying on them as a public legal document.
+
+4. USER LEGAL RESPONSIBILITY
+
+Users must use the service lawfully, respect intellectual-property and privacy
+rights, and avoid submitting personal, confidential, or regulated information
+unless the operator has expressly enabled and documented that use. The service
+does not make unlawful conduct lawful and does not replace a user's duty to
+check applicable law.
+
+5. RESEARCH AND AI LIMITS
+
+Research answers are generated using automated systems and web sources. They
+can be incomplete, outdated, misleading, or wrong. A citation shows that a
+source was cited; it does not prove the source is accurate or supports every
+claim. Verify important claims against the cited material and qualified
+professionals. Do not rely on the service for emergencies or as a substitute
+for legal, medical, financial, or other professional advice.
+
+6. OFFICIAL REFERENCES
+
+Digital Personal Data Protection Act, 2023 — India Code:
+https://www.indiacode.nic.in/indiacode/handle/123456789/22037?view_type=browse
+
+DPDP Act commencement notification, Gazette of India, 13 November 2025:
+https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf
+
+Digital Personal Data Protection Rules, 2025, Gazette of India, 13 November
+2025:
+https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf
+
+Information Technology Act, 2000 — India Code:
+https://www.indiacode.nic.in/indiacode/handle/123456789/1999?locale=en
+
+Information Technology (Intermediary Guidelines and Digital Media Ethics Code)
+Rules, 2021, consolidated by MeitY:
+https://www.meity.gov.in/static/uploads/2026/02/550681ab908f8afb135b0ad42816a1c9.pdf
+
+Official materials can change. Check the current statute, Gazette, rules, and
+orders before launch or when changing the service.
