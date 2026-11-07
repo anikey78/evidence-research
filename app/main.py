@@ -12,7 +12,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import get_settings
 from app.research import research
-from app.safety import moderate, matches_blocked_phrase
+from app.safety import matches_blocked_phrase, moderate
 
 settings = get_settings()
 WINDOW_SECONDS = 60
