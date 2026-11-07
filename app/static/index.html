@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f8fc">
+    <meta name="description" content="Research questions with web sources, citations, and clear uncertainty.">
+    <title>Evidence Desk — Research with sources</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Evidence Desk home">
+        <span class="brand-mark" aria-hidden="true">E</span>
+        <span>Evidence Desk</span>
+      </a>
+      <span class="top-note"><span class="live-dot"></span> Live web research</span>
+    </header>
+
+    <main class="page-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">RESEARCH, WITH RECEIPTS</p>
+        <h1 id="page-title">Better answers start<br><span>with better evidence.</span></h1>
+        <p class="intro-copy">Ask a question. Get a researched answer with clickable sources, clear limits, and safety checks.</p>
+      </section>
+
+      <section class="composer card" aria-label="Ask a research question">
+        <form id="question-form">
+          <label for="question">What would you like to know?</label>
+          <textarea id="question" name="question" maxlength="4000" minlength="3" required placeholder="Ask about a topic, claim, event, or decision…"></textarea>
+          <p class="privacy-note">Avoid private or sensitive information. Your question is sent to the research provider for moderation and web research.</p>
+          <div class="composer-footer">
+            <span id="char-count">0 / 4000</span>
+            <button id="submit-button" type="submit"><span>Research answer</span><span aria-hidden="true">↗</span></button>
+          </div>
+        </form>
+        <div class="suggestions" aria-label="Example questions">
+          <span>Try:</span>
+          <button type="button" class="suggestion">What do current studies say about sleep and memory?</button>
+          <button type="button" class="suggestion">How does a heat pump work?</button>
+        </div>
+      </section>
+
+      <div class="trust-row">
+        <div><span class="trust-icon">↗</span><span>Sources you can open</span></div>
+        <div><span class="trust-icon">◎</span><span>Uncertainty stated clearly</span></div>
+        <div><span class="trust-icon">⌑</span><span>Safety checks on every request</span></div>
+      </div>
+
+      <section id="status-panel" class="status-panel" aria-live="polite" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <div><strong id="status-title">Researching your question</strong><p id="status-detail">Searching sources and checking evidence…</p></div>
+      </section>
+
+      <section id="result" class="result card" aria-live="polite" hidden>
+        <div class="result-heading">
+          <div><p class="eyebrow">RESEARCH RESULT</p><h2>What the evidence says</h2></div>
+          <span id="evidence-badge" class="evidence-badge"></span>
+        </div>
+        <div id="answer-text" class="answer-text"></div>
+        <div id="source-section" class="source-section" hidden>
+          <div class="source-heading"><h3>Sources</h3><span id="source-count"></span></div>
+          <ol id="source-list" class="source-list"></ol>
+        </div>
+        <p class="limit-note">Sources support the answer; they do not guarantee certainty. Check the original material, especially for high-stakes decisions.</p>
+      </section>
+
+      <p id="error-message" class="error-message" role="alert" hidden></p>
+
+      <footer class="page-footer">
+        <p>Evidence Desk can make mistakes. It will say when it cannot verify a claim.</p>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">Built for transparent research</a>
+      </footer>
+    </main>
+  </body>
+</html>
