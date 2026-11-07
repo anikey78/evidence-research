@@ -95,7 +95,7 @@ Returns `answer`, `citations`, `grounded`, and `refused`. `GET /api/health` retu
 
 ## GitHub security checklist
 
-- GitHub secret scanning is enabled and currently reports no unresolved secrets. A separate manual audit of all commit history could not be completed, so this is not a complete audit or a guarantee; verify the history before production and investigate any alerts.
+- GitHub Secret Scanning currently reports no unresolved alerts. A pattern-based scan of 53 reachable commits across 18 refs and 44 unique blobs found no matches for configured credential patterns, including common provider/GitHub/AWS tokens, private-key headers, bearer tokens, and generic credential assignments. This bounded scan is not proof that history contains no secrets; keep alerts enabled and investigate any future finding.
 - Add the real API key only to the deployment host's secret manager.
 - Enabled: dependency graph, Dependabot alerts, malware alerts and security updates, secret scanning, push protection, private vulnerability reporting, CodeQL default setup, and GitHub AI application scanning.
 - The active Protect main ruleset requires pull requests and current quality and container checks; CodeQL and AI application scanning are enabled but are not required merge checks.
