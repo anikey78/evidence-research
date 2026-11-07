@@ -22,6 +22,7 @@ class Settings(BaseSettings):
 
     openai_api_key: str = ""
     openai_model: str = "gpt-6-astra"
+    openai_verifier_model: str = ""
     max_question_chars: int = Field(default=4000, ge=100, le=20000)
     max_output_tokens: int = Field(default=1400, ge=128, le=8000)
     request_timeout_seconds: float = Field(default=90, ge=5, le=300)
@@ -30,7 +31,7 @@ class Settings(BaseSettings):
     blocked_phrases: str = DEFAULT_BLOCKED_PHRASES
     allowed_hosts: str = "*"
 
-    @field_validator("openai_api_key", "openai_model", mode="before")
+    @field_validator("openai_api_key", "openai_model", "openai_verifier_model", mode="before")
     @classmethod
     def trim_strings(cls, value: object) -> object:
         return value.strip() if isinstance(value, str) else value
@@ -45,6 +46,10 @@ class Settings(BaseSettings):
     def hostnames(self) -> list[str]:
         hosts = [host.strip() for host in self.allowed_hosts.split(",") if host.strip()]
         return hosts or ["*"]
+
+    @property
+    def verifier_model(self) -> str:
+        return self.openai_verifier_model or self.openai_model
 
 
 @lru_cache
