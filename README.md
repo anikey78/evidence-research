@@ -2,13 +2,16 @@
 
 A deployable research-assistant web app that searches the live web, returns clickable source citations, states uncertainty, and applies safety checks to both questions and generated answers.
 
-> **Evidence is not a guarantee.** No system can prove every answer correct for every possible question. This app requires web search, asks for citations on factual claims, checks citations returned by the provider, and declines to present an uncited answer as verified.
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/anikey78/evidence-research) [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/anikey78/evidence-research)
+
+> **Evidence is not a guarantee.** No system can prove every answer correct for every possible question. This app requires web search, asks for citations on factual claims, runs a separate fresh-search review, and withholds substantive answers that do not pass its evidence gate.
 
 ## Features
 
 - Required web search for each research request.
 - Clickable citations from the Responses API's URL citation annotations.
 - Primary-source preference, source comparison, explicit uncertainty, and no invented citations in the research instructions.
+- A second fresh-search review checks material claims; the app abstains unless the review passes and cites at least two distinct source hosts.
 - Input and output moderation with `omni-moderation-latest`; moderation errors fail closed.
 - Safe refusal guidance for requests that would enable harm.
 - Optional configurable blocked phrases as a supplemental filter.
@@ -36,6 +39,22 @@ Requirements: Python 3.12+ and an OpenAI API key with access to the configured m
 
 The key stays on the server. Never place it in browser code, commit it, or share it in screenshots. The app sends the question to the configured provider for moderation and research; `store: false` is set on Responses API calls. Review the provider's current data controls and terms before sending sensitive information.
 
+## Use without installing
+
+### GitHub Codespaces
+
+1. Add your own `OPENAI_API_KEY` as a [GitHub Codespaces secret](https://github.com/settings/codespaces), and grant the secret access to this repository.
+2. Click **Open in GitHub Codespaces** above and create a codespace.
+3. The app starts automatically. Open the forwarded **Evidence Research** preview on port 8000.
+
+Codespaces ports are private by default. Keep them private unless you deliberately want to share your temporary preview. Codespaces availability and billing depend on your GitHub account.
+
+### Deploy your own hosted copy
+
+Click **Deploy to Render** above, sign in to your own Render account, and enter your own provider key when Render requests `OPENAI_API_KEY`. The blueprint fills the allowed host from the service's Render hostname. Each click creates a separate service in the deployer's account; this repository does not provide a shared public answering service or API key.
+
+The included Render service uses the free plan for demos. Render free web services sleep after 15 minutes without incoming traffic, and the next request can take about a minute to wake the service. This is not a production plan. A hosted instance is public: anyone can send it requests, so add authentication, usage budgets, and abuse monitoring before putting a provider key behind a shared public service. Render and provider usage may incur charges in your own accounts.
+
 ## Run with Docker
 
 ```bash
@@ -57,6 +76,8 @@ The repository includes `render.yaml` for a Render Docker web service on its fre
 5. Confirm the HTTPS URL and `/api/health` endpoint. `research_ready` should be `true` once the secret is configured.
 6. GitHub secret scanning, push protection, private vulnerability reporting, Dependabot, and CodeQL are enabled; check the GitHub Security tab for new findings.
 
+Set `OPENAI_VERIFIER_MODEL` to a different supported model if you want model diversity in the review pass. Leaving it empty uses `OPENAI_MODEL` for both passes. The review performs another web search, so it adds latency and API usage.
+
 This repository does not publish itself or create a hosting account. Hosting, model, and search usage may incur charges under your provider account.
 
 ## Configuration
@@ -65,6 +86,7 @@ This repository does not publish itself or create a hosting account. Hosting, mo
 |---|---:|---|
 | `OPENAI_API_KEY` | empty | Server-side API credential; required for answers |
 | `OPENAI_MODEL` | `gpt-6-astra` | Model available to your account |
+| `OPENAI_VERIFIER_MODEL` | same as `OPENAI_MODEL` | Optional model for the separate evidence-review pass |
 | `MAX_QUESTION_CHARS` | `4000` | Maximum user question size |
 | `MAX_OUTPUT_TOKENS` | `1400` | Response cap |
 | `REQUEST_TIMEOUT_SECONDS` | `90` | Provider timeout |
@@ -79,9 +101,16 @@ The in-memory rate limit is intended for a single app process/instance. For mult
 
 - Moderation is a layer, not a guarantee. It may miss harmful requests or flag legitimate discussion; configure the app and review the provider's current moderation behavior for your use case.
 - The built-in and configurable phrase filters supplement moderation only. Literal phrase filters are easy to evade and can block benign questions; they are not the safety system.
-- A citation proves that a source was cited, not that the source is accurate, current, or that it supports every sentence. Read important sources directly.
+- A citation proves that a source was cited, not that the source is accurate, current, or that it supports every sentence. Two distinct hosts may repeat the same underlying report. Read important sources directly.
+- The review gate is a risk reduction measure, not a calibrated probability or a 99% guarantee. The default verifier uses the same model with a fresh search; shared model errors remain possible.
 - Search can be unavailable or return weak/conflicting results. When no citation annotation is available, the app says it cannot verify the answer.
 - This starter has no user accounts, billing controls, durable logs, or enterprise abuse operations. Add those before a broad public launch.
+
+## Accuracy target
+
+The project sets a **99% precision target among substantive answers** on a curated, human-reviewed benchmark. This target has not been measured or achieved for this repository, and it is not a claim about every possible question. Abstentions improve precision only by reducing coverage, so report both metrics. See [`ACCURACY_EVALUATION.md`](ACCURACY_EVALUATION.md) for the evaluation protocol.
+
+At runtime, a second pass uses a fresh web search and strict structured output to check material claims. The app abstains if the review is uncertain, finds issues, lacks matching citation annotations from two distinct source hosts, or cannot complete. This gate does not establish statistical 99% accuracy by itself.
 
 ## API
 
@@ -91,7 +120,7 @@ The in-memory rate limit is intended for a single app process/instance. For mult
 {"question":"What does the latest evidence say about ...?"}
 ```
 
-Returns `answer`, `citations`, `grounded`, and `refused`. `GET /api/health` returns service status without revealing credentials. API documentation routes are disabled in production.
+Returns `answer`, `citations`, `citation_spans`, `grounded`, `verified`, and `refused`. `verified` means the separate review gate passed; it is not a correctness guarantee. `GET /api/health` returns service status without revealing credentials. API documentation routes are disabled in production.
 
 ## GitHub security checklist
 
@@ -103,20 +132,5 @@ Returns `answer`, `citations`, `grounded`, and `refused`. `GET /api/health` retu
 
 ## Legal text files
 
-- [`LAW.txt`](LAW.txt) lists India-focused legal topics and official sources for
-  the operator to review.
-- [`TERMS_AND_CONDITIONS.txt`](TERMS_AND_CONDITIONS.txt) is a project-specific
-  draft. Complete its bracketed operator, contact, date, and court-location
-  fields and obtain qualified Indian legal review before using it as public
-  terms. It is not a privacy notice or a compliance certification.
-
-
-## Accuracy target and evidence review
-
-The project sets a **99% precision target among substantive answers** on a curated, human-reviewed benchmark. This target has not been measured or achieved for this repository, and it is not a guarantee for every possible question. Report coverage and abstentions with precision. See [ACCURACY_EVALUATION.md](ACCURACY_EVALUATION.md) for the evaluation protocol.
-
-At runtime, the app performs a second fresh-search review and withholds substantive answers unless every material claim is judged supported, no issue is reported, and the review supplies matching citation annotations from at least two distinct source hosts. The app labels this gate as a review pass, not proof of correctness or statistical 99% accuracy. Different hosts may repeat the same underlying report, and the default verifier uses the same model, so correlated errors remain possible. The extra search increases response time and API use.
-
-Set OPENAI_VERIFIER_MODEL to a different supported model to add some model diversity. Leave it empty to use OPENAI_MODEL for both passes. If the review is uncertain, returns issues, lacks the required citations, or fails, the service abstains.
-
-POST /api/answer now also returns citation_spans and verified. The verified field means only that the review gate passed; it is not a correctness guarantee.
+- [`LAW.txt`](LAW.txt) lists India-focused legal topics and official sources for the operator to review.
+- [`TERMS_AND_CONDITIONS.txt`](TERMS_AND_CONDITIONS.txt) is a project-specific draft. Complete its bracketed operator, contact, date, and court-location fields and obtain qualified Indian legal review before using it as public terms. It is not a privacy notice or a compliance certification.

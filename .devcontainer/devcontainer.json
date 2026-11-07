@@ -1,0 +1,15 @@
+{
+  "name": "Evidence Research",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "overrideCommand": false,
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Evidence Research",
+      "onAutoForward": "openPreview"
+    }
+  }
+}

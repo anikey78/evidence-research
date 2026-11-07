@@ -3,6 +3,7 @@ services:
     name: evidence-research
     runtime: docker
     plan: free
+    autoDeployTrigger: off
     healthCheckPath: /api/health
     envVars:
       - key: OPENAI_API_KEY
@@ -10,6 +11,9 @@ services:
       - key: OPENAI_MODEL
         value: gpt-6-astra
       - key: ALLOWED_HOSTS
-        sync: false
+        fromService:
+          type: web
+          name: evidence-research
+          envVarKey: RENDER_EXTERNAL_HOSTNAME
       - key: MAX_REQUESTS_PER_MINUTE
         value: "30"
