@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import get_settings
-from app.research import research
+from app.research import research, verify_research
 from app.safety import matches_blocked_phrase, moderate
 
 settings = get_settings()
@@ -129,7 +129,9 @@ async def answer(payload: QuestionRequest, request: Request):
                     "prevention, or a lawful educational purpose."
                 ),
                 "citations": [],
+                "citation_spans": [],
                 "grounded": False,
+                "verified": False,
                 "refused": True,
             },
             status_code=200,
@@ -143,17 +145,55 @@ async def answer(payload: QuestionRequest, request: Request):
                 return {
                     "answer": input_check.message,
                     "citations": [],
+                    "citation_spans": [],
                     "grounded": False,
+                    "verified": False,
                     "refused": True,
                 }
 
             result = await research(question, settings, client)
+            review = {"passed": False, "citations": []}
+            if not result["refusal"]:
+                if not result["citations"]:
+                    return {
+                        "answer": (
+                            "I could not retrieve usable citations, so I’m withholding a "
+                            "substantive answer rather than presenting it as verified. "
+                            "Try again or narrow the question."
+                        ),
+                        "citations": [],
+                        "citation_spans": [],
+                        "grounded": False,
+                        "verified": False,
+                        "refused": False,
+                    }
+                review = await verify_research(question, result, settings, client)
+                if not review["passed"]:
+                    cited_sources = {
+                        source["url"]: source
+                        for source in [*result["citations"], *review["citations"]]
+                    }
+                    return {
+                        "answer": (
+                            "I couldn’t verify every material claim against at least two "
+                            "distinct source hosts, so I’m withholding a substantive answer. "
+                            "Try a narrower question or consult primary sources."
+                        ),
+                        "citations": list(cited_sources.values()),
+                        "citation_spans": [],
+                        "grounded": False,
+                        "verified": False,
+                        "refused": False,
+                    }
+
             output_check = await moderate(result["answer"], settings, client)
             if not output_check.allowed:
                 return {
                     "answer": output_check.message,
                     "citations": [],
+                    "citation_spans": [],
                     "grounded": False,
+                    "verified": False,
                     "refused": True,
                 }
 
@@ -184,20 +224,15 @@ async def answer(payload: QuestionRequest, request: Request):
             detail="Research is temporarily unavailable. Please try again.",
         ) from None
 
-    if not result["refusal"] and not result["citations"]:
-        return {
-            "answer": (
-                "I could not retrieve usable citations for this answer, so I can’t present it as "
-                "verified. Try again or narrow the question."
-            ),
-            "citations": [],
-            "grounded": False,
-            "refused": False,
-        }
+    cited_sources = {
+        source["url"]: source
+        for source in [*result["citations"], *review["citations"]]
+    }
     return {
         "answer": result["answer"],
-        "citations": result["citations"],
+        "citations": list(cited_sources.values()),
         "citation_spans": result["citation_spans"],
-        "grounded": bool(result["citations"]),
+        "grounded": bool(result["refusal"] is False and review["passed"]),
+        "verified": bool(result["refusal"] is False and review["passed"]),
         "refused": result["refusal"],
     }

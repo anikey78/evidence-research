@@ -14,13 +14,13 @@ const sourceList = document.querySelector('#source-list');
 const errorMessage = document.querySelector('#error-message');
 
 input.addEventListener('input', () => {
-  count.textContent = `${input.value.length} / ${input.maxLength}`;
+  count.textContent = input.value.length + ' / ' + input.maxLength;
 });
 
 document.querySelectorAll('.suggestion').forEach((button) => {
   button.addEventListener('click', () => {
     input.value = button.textContent.trim();
-    count.textContent = `${input.value.length} / ${input.maxLength}`;
+    count.textContent = input.value.length + ' / ' + input.maxLength;
     input.focus();
   });
 });
@@ -70,7 +70,7 @@ function renderSources(sources) {
   });
 
   sourceSection.hidden = validSources.length === 0;
-  sourceCount.textContent = validSources.length ? `${validSources.length} cited` : '';
+  sourceCount.textContent = validSources.length ? validSources.length + ' cited' : '';
 }
 
 function renderAnswer(text, spans) {
@@ -118,8 +118,13 @@ form.addEventListener('submit', async (event) => {
 
     renderAnswer(data.answer || 'No answer was returned.', data.citation_spans);
     renderSources(Array.isArray(data.citations) ? data.citations : []);
-    evidenceBadge.textContent = data.grounded ? 'Sources attached' : (data.refused ? 'Safety response' : 'Not verified');
-    evidenceBadge.classList.toggle('unverified', !data.grounded);
+    evidenceBadge.textContent = data.verified
+      ? 'Evidence review passed'
+      : (data.refused ? 'Safety response' : 'Not verified');
+    evidenceBadge.title = data.verified
+      ? 'A separate fresh-search review passed. This is not a guarantee of correctness.'
+      : 'The app withholds substantive answers that do not pass its evidence review.';
+    evidenceBadge.classList.toggle('unverified', !data.verified);
     resultPanel.hidden = false;
     resultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (error) {
