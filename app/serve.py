@@ -1,7 +1,6 @@
 """Production container entry point."""
 
 import os
-
 import uvicorn
 
 
